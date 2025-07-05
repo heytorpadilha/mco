@@ -22,3 +22,11 @@ Route::get('/edit-user/{user}', [UserController::class,'edit'])
 /* ação para editar usuário */
 Route::put('/update-user/{user}', [UserController::class,'update'])
         ->name('user.update');
+
+/* tela de editar password do usuário */
+Route::get('/edit-password-user/{user}', [UserController::class,'editPassword'])
+        ->name('user.editPassword');
+
+/* Ação de editar password do usuário */
+Route::put('/update-password-user/{user}', [UserController::class,'updatePassword'])
+        ->name('user.updatePassword');

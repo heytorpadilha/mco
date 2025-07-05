@@ -58,4 +58,21 @@ class UserController extends Controller
             return back()->withInput()->with('error', 'Usuário não editado!');
         }
    }
+
+   public function editPassword(User $user){
+        return view('users.editPassword', ['user'=> $user]);
+   }
+
+   public function updatePassword(UserRequest $request, User $user){
+    try{
+        $user->update([
+            'password'=> $request->password,
+        ]);
+        return redirect()->
+        route('user.editPassword', [$user->id])->
+        with('success', 'Senha do usuário alterada com sucesso!'); 
+    }catch( Exception $e){
+        return back()->withInput()->with('error', '');
+    }
+   }
 }

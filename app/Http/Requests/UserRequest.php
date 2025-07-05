@@ -22,21 +22,29 @@ class UserRequest extends FormRequest
     public function rules(): array
     {
         $user = $this->route('user');
-        return [
-            'name'=> 'required',
-            'email'=> 'required|email|unique:users,email,' . ($user ? $user->id : null),
-            'password'=> 'required_if:password,!=,null|min:6',
-        ];
+        /** Se vier da rota update senha usuário. so valida a senha */
+        if ($this->is('update-password-user/*')) {
+            return [
+                'password' => 'required_if:password,!=,null|min:6',
+            ];
+        } else {
+            return [
+                'name' => 'required',
+                'email' => 'required|email|unique:users,email,' . ($user ? $user->id : null),
+                'password' => 'required_if:password,!=,null|min:6',
+            ];
+        }
+
     }
     public function messages(): array
     {
         return [
-            'name.required'=> 'Campo nome é obrigatório!',
-            'email.required'=> 'Campo e-mail é obrigatório!',
-            'email.email'=> 'Necessário enviar e-mail válido!',
-            'email.unique'=> 'O e-mail já está cadastrado!',
-            'password.required_if'=> 'Campo senha é obrigatório!',
-            'password.min'=> 'A senha precisa ter no mínimo :min caracteres',
+            'name.required' => 'Campo nome é obrigatório!',
+            'email.required' => 'Campo e-mail é obrigatório!',
+            'email.email' => 'Necessário enviar e-mail válido!',
+            'email.unique' => 'O e-mail já está cadastrado!',
+            'password.required_if' => 'Campo senha é obrigatório!',
+            'password.min' => 'A senha precisa ter no mínimo :min caracteres',
         ];
     }
 }
