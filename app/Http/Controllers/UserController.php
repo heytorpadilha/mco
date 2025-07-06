@@ -16,14 +16,14 @@ class UserController extends Controller
     public function store(UserRequest $request){
         //dd($request->request);
         try{
-            User::create([
+            $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => $request->password,
             ]);
 
             return redirect()->
-            route('user.create')->
+            route('user.show',['user'=>$user])->
             with('success', 'Usuário cadastrado com sucesso!'); 
         
         }catch( Exception $e){
@@ -50,7 +50,7 @@ class UserController extends Controller
                 'email'=> $request->email,
             ]);
              return redirect()->
-            route('user.edit', [$user->id])->
+            route('user.show', [$user->id])->
             with('success', 'Usuário editado com sucesso!');            
             
         }catch(Exception $e){
@@ -69,7 +69,7 @@ class UserController extends Controller
             'password'=> $request->password,
         ]);
         return redirect()->
-        route('user.editPassword', [$user->id])->
+        route('user.show', [$user->id])->
         with('success', 'Senha do usuário alterada com sucesso!'); 
     }catch( Exception $e){
         return back()->withInput()->with('error', '');

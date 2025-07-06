@@ -26,7 +26,6 @@
                             <td class="table-actions">
                                 <a href="{{ route('user.show', ['user'=> $user->id]) }}" class="btn-primary">Visualizar</a>
                                 <a href="{{ route('user.edit' , ['user' => $user->id]) }}" class="btn-warning">Editar</a>
-                                <a href="{{ route('user.editPassword' , ['user' => $user->id]) }}" class="btn-warning2">Editar senha</a>
                                 <a href="" class="btn-danger">Apagar</a>
                             </td>
                         </tr>
