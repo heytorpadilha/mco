@@ -8,14 +8,17 @@ use Exception;
 
 class UserController extends Controller
 {
-    public function create(){
+    //view de cadastro do usuário
+    public function create()
+    {
         //Carregar a VIEW
         return view("users.create");
     }
-
-    public function store(UserRequest $request){
+    //cadastrar novo usuário
+    public function store(UserRequest $request)
+    {
         //dd($request->request);
-        try{
+        try {
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -23,60 +26,81 @@ class UserController extends Controller
             ]);
 
             return redirect()->
-            route('user.show',['user'=>$user])->
-            with('success', 'Usuário cadastrado com sucesso!'); 
-        
-        }catch( Exception $e){
+                route('user.show', ['user' => $user])->
+                with('success', 'Usuário cadastrado com sucesso!');
+
+        } catch (Exception $e) {
             /*  redireciona o usuário para mesma pagina e envia mensagem de erro  */
             return back()->withInput()->with('error', 'Usuário não Cadastrado!');
         }
     }
-
-    public function index(){
+    // listagem de usuários
+    public function index()
+    {
 
         $users = User::orderByDesc('id')->paginate(2);
         return view('users.index', ['users' => $users]);
     }
-
-    public function edit(User $user){
-        return view('users.edit', ['user'=> $user]);
+    //view de alterar dados do usuário
+    public function edit(User $user)
+    {
+        return view('users.edit', ['user' => $user]);
     }
-
-   public function update(UserRequest $request, User $user){
-        try{
+    //alterar dados do usuário
+    public function update(UserRequest $request, User $user)
+    {
+        try {
             // editar informações do registro no banco de dados
             $user->update([
                 'name' => $request->name,
-                'email'=> $request->email,
+                'email' => $request->email,
             ]);
-             return redirect()->
-            route('user.show', [$user->id])->
-            with('success', 'Usuário editado com sucesso!');            
-            
-        }catch(Exception $e){
+            return redirect()->
+                route('user.show', [$user->id])->
+                with('success', 'Usuário editado com sucesso!');
+
+        } catch (Exception $e) {
             /*  redireciona o usuário para mesma pagina e envia mensagem de erro  */
             return back()->withInput()->with('error', 'Usuário não editado!');
         }
-   }
-
-   public function editPassword(User $user){
-        return view('users.editPassword', ['user'=> $user]);
-   }
-
-   public function updatePassword(UserRequest $request, User $user){
-    try{
-        $user->update([
-            'password'=> $request->password,
-        ]);
-        return redirect()->
-        route('user.show', [$user->id])->
-        with('success', 'Senha do usuário alterada com sucesso!'); 
-    }catch( Exception $e){
-        return back()->withInput()->with('error', '');
     }
-   }
+    //view de editar password
+    public function editPassword(User $user)
+    {
+        return view('users.editPassword', ['user' => $user]);
+    }
+    //alterar senha
+    public function updatePassword(UserRequest $request, User $user)
+    {
+        try {
+            $user->update([
+                'password' => $request->password,
+            ]);
+            return redirect()->
+                route('user.show', [$user->id])->
+                with('success', 'Senha do usuário alterada com sucesso!');
+        } catch (Exception $e) {
+            return back()->withInput()->with('error', '');
+        }
+    }
+    //visualizar usuário
+    public function show(User $user)
+    {
+        return view('users.show', ['user' => $user]);
+    }
+    //Excluir usuário do banco de dados
+    public function destroy(User $user)
+    {
+        try {
+            //excluir o registro do banco de dados
+            $user->delete();
+            return redirect()
+                    ->route('user.index')
+                    ->with('success','Usuário excluído com sucesso!');
+        } catch (Exception $e) {
+            return redirect()->route('user.index')
+                ->with('error', 'Usuário não excluído!');
+        }
+    }
 
-   public function show(User $user){
-        return view('users.show', ['user'=> $user]);
-   }
 }

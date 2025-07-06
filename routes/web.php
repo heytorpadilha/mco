@@ -34,3 +34,7 @@ Route::put('/update-password-user/{user}', [UserController::class,'updatePasswor
 /* tela de visualizar dados do usuário */
 Route::get('/show-user/{user}', [UserController::class,'show'])
         ->name('user.show');
+
+/* ação para deletar usuário */
+Route::delete('/destroy-user/{user}', [UserController::class,'destroy'])
+        ->name('user.destroy');        
