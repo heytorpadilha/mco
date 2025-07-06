@@ -75,4 +75,8 @@ class UserController extends Controller
         return back()->withInput()->with('error', '');
     }
    }
+
+   public function show(User $user){
+        return view('users.show', ['user'=> $user]);
+   }
 }

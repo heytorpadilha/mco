@@ -30,3 +30,7 @@ Route::get('/edit-password-user/{user}', [UserController::class,'editPassword'])
 /* Ação de editar password do usuário */
 Route::put('/update-password-user/{user}', [UserController::class,'updatePassword'])
         ->name('user.updatePassword');
+
+/* tela de visualizar dados do usuário */
+Route::get('/show-user/{user}', [UserController::class,'show'])
+        ->name('user.show');
