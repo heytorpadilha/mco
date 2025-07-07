@@ -37,4 +37,7 @@ Route::get('/show-user/{user}', [UserController::class,'show'])
 
 /* ação para deletar usuário */
 Route::delete('/destroy-user/{user}', [UserController::class,'destroy'])
-        ->name('user.destroy');        
+        ->name('user.destroy');
+// rota para gerar pdf
+Route::get('/generate-pdf-user/{user}', [UserController::class,'generatePdf'])
+        ->name('user.generate-pdf');
