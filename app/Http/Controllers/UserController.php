@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\UserPdfMail;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Exception;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -96,21 +98,50 @@ class UserController extends Controller
             //excluir o registro do banco de dados
             $user->delete();
             return redirect()
-                    ->route('user.index')
-                    ->with('success','Usuário excluído com sucesso!');
+                ->route('user.index')
+                ->with('success', 'Usuário excluído com sucesso!');
         } catch (Exception $e) {
             return redirect()->route('user.index')
                 ->with('error', 'Usuário não excluído!');
         }
     }
     //gerar pdf do usuário
-    public function generatePdf(User $user){
-        // montando o pdf e suas configurações, 
-        //dentro do loadView('html do pdf', [ objeto com os dados do banco])->setPaper('estilo da folha','orientação')
-        $pdf = Pdf::loadView('users.generate-pdf', ['user'=> $user])
+    public function generatePdf(User $user)
+    {
+
+        try {
+
+            // montando o pdf e suas configurações, 
+            //dentro do loadView('html do pdf', [ objeto com os dados do banco])->setPaper('estilo da folha','orientação')
+            $pdf = Pdf::loadView('users.generate-pdf', ['user' => $user])
                 ->setPaper('a4', 'portrait');
-        //força o download do arquivo.        
-        return $pdf->download('view_usar.pdf');
+
+            //força o download do arquivo.        
+            // return $pdf->download('view_usar.pdf');
+            // Definir caminho temporario para salvar pdf antes de enviar o email.
+            $pdfPath = storage_path('app/public/view_user_' . $user->id . '.pdf');
+
+            //Salvar o pdf localmente
+            $pdf->save($pdfPath);
+
+            //enviar o email com o pdf anexado
+            Mail::to($user->email)
+                ->send(new UserPdfMail($pdfPath, $user));
+
+            //remover arquivo temporário
+            if (file_exists($pdfPath)) {
+                unlink($pdfPath);
+            }
+            // redirecionar o usuário, enviar a mensagem de sucesso
+            return redirect()->route('user.show', ['user' => $user->id])
+                ->with('success', 'E-mail enviado com sucesso!');
+
+        } catch (Exception $e) {
+
+            return redirect()->route('user.show', ['user' => $user->id])
+                ->with('error', 'E-mail não enviado!');
+        }
+
     }
 
 }
