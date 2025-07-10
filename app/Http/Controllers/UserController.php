@@ -8,6 +8,7 @@ use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -38,11 +39,29 @@ class UserController extends Controller
         }
     }
     // listagem de usuários
-    public function index()
+    public function index(Request $request)
     {
+        // recuperando registros do banco de dados
+        // $users = User::orderByDesc('id')->paginate(2);
+        $users = User::when(
+            $request->filled('name'),
+            fn($query) =>
+            $query->whereLike('name', '%'.$request->name.'%')
+        )
+            ->when(
+                $request->filled('email'),
+                fn($query) => 
+                $query->whereLike('email', '%'.$request->email.'%')
+            )
+            ->orderByDesc('id')
+            ->paginate(5)
+            ->withQueryString();
 
-        $users = User::orderByDesc('id')->paginate(2);
-        return view('users.index', ['users' => $users]);
+        return view('users.index', [
+            'users' => $users,
+            'name' => $request->name,
+            'email'=> $request->email,
+        ]);
     }
     //view de alterar dados do usuário
     public function edit(User $user)

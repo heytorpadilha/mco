@@ -116,33 +116,33 @@
     /*Início Botões*/
     /*Botão azul*/
     .btn-primary {
-        @apply bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors;
+        @apply p-2 bg-blue-500 text-white  rounded-md hover:bg-blue-600 transition-colors;
     }
 
      
     /*Botão azul claro*/
     .btn-info {
-        @apply bg-cyan-500 text-white px-4 py-2 rounded-md hover:bg-cyan-600 transition-colors;
+        @apply p-2 bg-cyan-500 text-white  rounded-md hover:bg-cyan-600 transition-colors;
     }
 
     /*Botão verde*/
     .btn-success {
-        @apply bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors;
+        @apply p-2 bg-green-500 text-white  rounded-md hover:bg-green-600 transition-colors;
     }
 
     /*Botão Amarelo*/
     .btn-warning {
-        @apply bg-amber-500 text-white px-4 py-2 rounded-md hover:bg-amber-600 transition-colors;
+        @apply p-2 bg-amber-500 text-white  rounded-md hover:bg-amber-600 transition-colors;
     }
 
     /*Botão amarelo claro*/
     .btn-warning2 {
-        @apply bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600 transition-colors;
+        @apply p-2 bg-yellow-500 text-white  rounded-md hover:bg-yellow-600 transition-colors;
     }
 
     /*Botão vermelho*/
     .btn-danger {
-        @apply bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors;
+        @apply p-2 bg-red-500 text-white  rounded-md hover:bg-red-600 transition-colors;
     }
 
     /*Fim Botões*/

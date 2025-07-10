@@ -7,6 +7,28 @@
             <a href="{{ route('user.create') }}" class="btn-success">Cadastrar</a>
         </div>
         <x-alert />
+
+        <form class="pb-3 grid xl:grid-cols-5 md:grid-cols-2 gap-2 items-end">
+            <input type="text" name="name" class="form-input" 
+            placeholder="Digite o nome" value="{{ $name }}">
+
+            <input type="text" name="email" class="form-input" 
+            placeholder="Digite o e-mail" value="{{ $email }}">
+            
+            <div class="flex gap-1">
+                <button type="submit" class="btn-primary">
+                    <span>
+                        Pesquisar
+                    </span>
+                </button>
+                <a href="{{ route('user.index') }}" class="btn-warning">
+                    <span>
+                        Limpar
+                    </span>
+                </a>
+            </div>
+
+        </form>
         <div class="table-container">
             <table class="table">
                 <thead>
@@ -24,14 +46,13 @@
                             <td class="table-cell">{{ $user->name }}</td>
                             <td class="table-cell">{{ $user->email }}</td>
                             <td class="table-actions">
-                                <a href="{{ route('user.show', ['user'=> $user->id]) }}" class="btn-primary">Visualizar</a>
-                                <a href="{{ route('user.edit' , ['user' => $user->id]) }}" class="btn-warning">Editar</a>
-                                <form id="delete-form-{{ $user->id }}" action="{{ route('user.destroy',['user'=>$user->id]) }}" method="POST">
+                                <a href="{{ route('user.show', ['user' => $user->id]) }}" class="btn-primary">Visualizar</a>
+                                <a href="{{ route('user.edit', ['user' => $user->id]) }}" class="btn-warning">Editar</a>
+                                <form id="delete-form-{{ $user->id }}"
+                                    action="{{ route('user.destroy', ['user' => $user->id]) }}" method="POST">
                                     @csrf
                                     @method('delete')
-                                    <button type="button" 
-                                            class="btn-danger" 
-                                            onclick="confirmDelete({{ $user->id }})">
+                                    <button type="button" class="btn-danger" onclick="confirmDelete({{ $user->id }})">
                                         Apagar
                                     </button>
                                 </form>
