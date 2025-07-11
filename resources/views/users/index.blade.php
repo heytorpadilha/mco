@@ -9,12 +9,18 @@
         <x-alert />
 
         <form class="pb-3 grid xl:grid-cols-5 md:grid-cols-2 gap-2 items-end">
-            <input type="text" name="name" class="form-input" 
-            placeholder="Digite o nome" value="{{ $name }}">
+            <input type="text" name="name" class="form-input" placeholder="Digite o nome" value="{{ $name }}">
 
-            <input type="text" name="email" class="form-input" 
-            placeholder="Digite o e-mail" value="{{ $email }}">
-            
+            <input type="text" name="email" class="form-input" placeholder="Digite o e-mail"
+                value="{{ $email }}">
+
+            <input type="datetime-local" name="start_date_registration" class="form-input"
+                value="{{ $start_date_registration }}">
+
+            <input type="datetime-local" name="end_date_registration" class="form-input"
+                value="{{ $end_date_registration }}">
+
+
             <div class="flex gap-1">
                 <button type="submit" class="btn-primary">
                     <span>

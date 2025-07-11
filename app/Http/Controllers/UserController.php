@@ -6,6 +6,7 @@ use App\Mail\UserPdfMail;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
@@ -53,14 +54,32 @@ class UserController extends Controller
                 fn($query) => 
                 $query->whereLike('email', '%'.$request->email.'%')
             )
+
+            ->when(
+                $request->filled('start_date_registration'),
+                fn($query) =>
+                $query->where(
+                    'created_at',
+                    '>=',
+                    Carbon::parse($request->start_date_registration))
+            )
+            ->when(
+                $request->filled('end_date_registration'),
+                fn($query) =>
+                $query->where(
+                    'created_at',
+                    '<=',
+                    Carbon::parse($request->end_date_registration))
+            )
             ->orderByDesc('id')
             ->paginate(5)
             ->withQueryString();
-
         return view('users.index', [
             'users' => $users,
             'name' => $request->name,
             'email'=> $request->email,
+            'start_date_registration' => $request->start_date_registration,
+            'end_date_registration' => $request->end_date_registration,
         ]);
     }
     //view de alterar dados do usuário
