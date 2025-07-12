@@ -44,40 +44,15 @@ class UserController extends Controller
     {
         // recuperando registros do banco de dados
         // $users = User::orderByDesc('id')->paginate(2);
-        $users = User::when(
-            $request->filled('name'),
-            fn($query) =>
-            $query->whereLike('name', '%'.$request->name.'%')
-        )
-            ->when(
-                $request->filled('email'),
-                fn($query) => 
-                $query->whereLike('email', '%'.$request->email.'%')
-            )
-
-            ->when(
-                $request->filled('start_date_registration'),
-                fn($query) =>
-                $query->where(
-                    'created_at',
-                    '>=',
-                    Carbon::parse($request->start_date_registration))
-            )
-            ->when(
-                $request->filled('end_date_registration'),
-                fn($query) =>
-                $query->where(
-                    'created_at',
-                    '<=',
-                    Carbon::parse($request->end_date_registration))
-            )
-            ->orderByDesc('id')
+        $users = User::query();
+        $this->filterIndex($users, $request);
+        $users = $users->orderByDesc('id')
             ->paginate(5)
             ->withQueryString();
         return view('users.index', [
             'users' => $users,
             'name' => $request->name,
-            'email'=> $request->email,
+            'email' => $request->email,
             'start_date_registration' => $request->start_date_registration,
             'end_date_registration' => $request->end_date_registration,
         ]);
@@ -180,6 +155,81 @@ class UserController extends Controller
                 ->with('error', 'E-mail não enviado!');
         }
 
+    }
+
+    public function generatePdfUsers(Request $request)
+    {
+        try {
+            $users = User::query();
+            $this->filterIndex($users, $request);
+            $users = $users->orderByDesc('name')
+                ->get();
+            //Somar o total de registros 
+            $totalRecord = $users->count('id');
+            // verificar se a quantidade de resitros ultrapassa a o limite para gerar o PDF
+            $numberRecordsAllowed = 50;
+            if ($totalRecord > $numberRecordsAllowed) {
+
+                return redirect()->route('user.index', [
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'start_date_registration' => $request->start_date_registration,
+                    'end_date_registration' => $request->end_date_registration,
+                ])->with(
+                        'error',
+                        'Limite de registros foi ultrapassado para gerar PDF. ' .
+                        'O limite é de ' . $numberRecordsAllowed
+                    );
+            }
+
+            $pdf = Pdf::loadView(
+                'users.generate-pdf-users',
+                ['users' => $users]
+            )->setPaper('a4', 'portrait');
+
+            // Fazer o download do arquivo
+            return $pdf->download('lista_usuarios.pdf');
+
+        } catch (Exception $e) {
+            //redirecionar o usuario para pagina de listagem com msg de pdf não gertado
+            return redirect()->route('user.index')->with('error', 'PDF não gerado!');
+        }
+    }
+
+    /**
+     * Função reutilizável para aplicar filtros à consulta de usuarios
+     */
+    protected function filterIndex($query, Request $request)
+    {
+        $query->when(
+            $request->filled('name'),
+            fn($query) =>
+            $query->whereLike('name', '%' . $request->name . '%')
+        );
+        $query->when(
+            $request->filled('email'),
+            fn($query) =>
+            $query->whereLike('email', '%' . $request->email . '%')
+        );
+
+        $query->when(
+            $request->filled('start_date_registration'),
+            fn($query) =>
+            $query->where(
+                'created_at',
+                '>=',
+                Carbon::parse($request->start_date_registration)
+            )
+        );
+        $query->when(
+            $request->filled('end_date_registration'),
+            fn($query) =>
+            $query->where(
+                'created_at',
+                '<=',
+                Carbon::parse($request->end_date_registration)
+            )
+        );
     }
 
 }

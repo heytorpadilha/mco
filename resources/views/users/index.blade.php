@@ -4,7 +4,10 @@
     <div class="content">
         <div class="content-title">
             <h1 class="page-title">Listar os Usuários</h1>
-            <a href="{{ route('user.create') }}" class="btn-success">Cadastrar</a>
+            <span>
+                <a href="{{ route('user.create') }}" class="btn-success">Cadastrar</a>
+                <a href="{{ url('generate-pdf-user') . (request()->getQueryString() ? '?' . request()->getQueryString() : '') }}" class="btn-warning">Gerar PDF</a>
+            </span>
         </div>
         <x-alert />
 
@@ -52,7 +55,8 @@
                             <td class="table-cell">{{ $user->name }}</td>
                             <td class="table-cell">{{ $user->email }}</td>
                             <td class="table-actions">
-                                <a href="{{ route('user.show', ['user' => $user->id]) }}" class="btn-primary">Visualizar</a>
+                                <a href="{{ route('user.show', ['user' => $user->id]) }}"
+                                    class="btn-primary">Visualizar</a>
                                 <a href="{{ route('user.edit', ['user' => $user->id]) }}" class="btn-warning">Editar</a>
                                 <form id="delete-form-{{ $user->id }}"
                                     action="{{ route('user.destroy', ['user' => $user->id]) }}" method="POST">
